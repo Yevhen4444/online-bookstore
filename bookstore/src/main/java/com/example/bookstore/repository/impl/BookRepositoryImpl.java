@@ -1,12 +1,11 @@
 package com.example.bookstore.repository.impl;
 
-import com.example.bookstore.entity.Book;
-import com.example.bookstore.repository.BookRepository;
+import java.util.List;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
+import com.example.bookstore.entity.Book;
+import com.example.bookstore.repository.BookRepository;
 
 @Repository
 public class BookRepositoryImpl implements BookRepository {
