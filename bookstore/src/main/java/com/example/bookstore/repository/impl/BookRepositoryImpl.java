@@ -4,13 +4,11 @@ import com.example.bookstore.entity.Book;
 import com.example.bookstore.repository.BookRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import org.springframework.stereotype.Repository;
-
 import java.util.List;
+import org.springframework.stereotype.Repository;
 
 @Repository
 public class BookRepositoryImpl implements BookRepository {
-
     @PersistenceContext
     private EntityManager em;
 
