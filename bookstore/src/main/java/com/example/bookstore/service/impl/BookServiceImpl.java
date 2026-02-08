@@ -9,7 +9,6 @@ import com.example.bookstore.service.BookService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,17 +23,14 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<BookDto> getAll() {
-        List<Book> books = bookRepository.findAll();
-        List<BookDto> bookDtos = books.stream()
+        return bookRepository.findAll().stream()
                 .map(bookMapper::toDto)
                 .collect(Collectors.toList());
-        return bookDtos;
     }
 
     @Override
     public BookDto getBookById(Long id) {
-        Optional<Book> optionalBook = bookRepository.findById(id);
-        Book book = optionalBook.orElseThrow(
+        Book book = bookRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("Book not found with id: " + id)
         );
         BookDto bookDto = bookMapper.toDto(book);
@@ -44,8 +40,8 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookDto createBook(CreateBookRequestDto dto) {
         Book book = bookMapper.toEntity(dto);
-        Book savedBook = bookRepository.save(book);
-        BookDto bookDto = bookMapper.toDto(savedBook);
+        bookRepository.save(book);
+        BookDto bookDto = bookMapper.toDto(book);
         return bookDto;
     }
 }
