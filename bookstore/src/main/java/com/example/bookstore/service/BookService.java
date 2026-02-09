@@ -12,7 +12,7 @@ public interface BookService {
 
     BookDto createBook(CreateBookRequestDto bookDto);
 
-    BookDto updateBook(Long id, CreateBookRequestDto bookDto); // оновлення існуючої книги
+    BookDto updateBook(Long id, CreateBookRequestDto bookDto);
 
     void deleteBook(Long id);
 }
