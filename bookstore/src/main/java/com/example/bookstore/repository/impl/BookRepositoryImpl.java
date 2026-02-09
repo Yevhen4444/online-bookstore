@@ -5,6 +5,7 @@ import com.example.bookstore.repository.BookRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -17,13 +18,17 @@ public class BookRepositoryImpl implements BookRepository {
         if (book.getId() == null) {
             em.persist(book);
             return book;
-        } else {
-            return em.merge(book);
         }
+        return null;
     }
 
     @Override
     public List<Book> findAll() {
-        return em.createQuery("SELECT b FROM Book b", Book.class).getResultList();
+        return em.createQuery("from Book", Book.class).getResultList();
+    }
+
+    @Override
+    public Optional<Book> findById(Long id) {
+        return Optional.ofNullable(em.find(Book.class, id));
     }
 }
