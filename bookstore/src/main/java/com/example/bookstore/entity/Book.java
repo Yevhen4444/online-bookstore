@@ -9,11 +9,13 @@ import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Where;
 
 @Entity
 @Table(name = "books")
 @Getter
 @Setter
+@Where(clause = "is_deleted = false")
 public class Book {
 
     @Id
@@ -34,4 +36,7 @@ public class Book {
 
     private String description;
     private String coverImage;
+
+    @Column(nullable = false)
+    private Boolean isDeleted = false;
 }
