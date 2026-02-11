@@ -1,11 +1,13 @@
 package com.example.bookstore.service.impl;
 
 import com.example.bookstore.dto.BookDto;
+import com.example.bookstore.dto.BookSearchParametersDto;
 import com.example.bookstore.dto.CreateBookRequestDto;
 import com.example.bookstore.entity.Book;
 import com.example.bookstore.mapper.BookMapper;
 import com.example.bookstore.repository.BookRepository;
 import com.example.bookstore.service.BookService;
+import com.example.bookstore.specification.BookSpecification;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import java.util.List;
@@ -62,4 +64,13 @@ public class BookServiceImpl implements BookService {
         }
         bookRepository.softDeleteById(id);
     }
+
+    @Override
+    public List<BookDto> searchBooks(BookSearchParametersDto searchParameters) {
+        var books = bookRepository.findAll(BookSpecification.getBooks(searchParameters));
+        return books.stream()
+                .map(bookMapper::toDto)
+                .toList();
+    }
+
 }
