@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/books")
 @RequiredArgsConstructor
 public class BookController {
+
     private final BookService bookService;
 
     @GetMapping
@@ -29,7 +30,7 @@ public class BookController {
     }
 
     @GetMapping("/{id}")
-        public BookDto getBookById(@PathVariable Long id) {
+    public BookDto getBookById(@PathVariable Long id) {
         return bookService.getBookById(id);
     }
 
@@ -50,8 +51,7 @@ public class BookController {
     }
 
     @GetMapping("/search")
-    public List<BookDto> searchBooks(BookSearchParametersDto searchParameters) {
-        return bookService.searchBooks(searchParameters);
+    public List<BookDto> searchBooks(BookSearchParametersDto params) {
+        return bookService.searchBooks(params);
     }
-
 }
