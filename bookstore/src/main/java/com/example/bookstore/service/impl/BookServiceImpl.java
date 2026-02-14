@@ -7,7 +7,7 @@ import com.example.bookstore.entity.Book;
 import com.example.bookstore.mapper.BookMapper;
 import com.example.bookstore.repository.BookRepository;
 import com.example.bookstore.service.BookService;
-import com.example.bookstore.specification.BookSpecificationProvider;
+import com.example.bookstore.specification.BookSpecificationBuilder;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,24 +21,20 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class BookServiceImpl implements BookService {
 
-    private static final String TITLE_FIELD = "title";
-    private static final String AUTHOR_FIELD = "author";
-    private static final String IS_DELETED_FIELD = "isDeleted";
-
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
-    private final BookSpecificationProvider bookSpecificationProvider;
+    private final BookSpecificationBuilder bookSpecificationBuilder;
 
     @Override
     public List<BookDto> getAll() {
-        return bookRepository.findAllByIsDeletedFalse().stream()
+        return bookRepository.findAll().stream()
                 .map(bookMapper::toDto)
                 .collect(Collectors.toList());
     }
 
     @Override
     public BookDto getBookById(Long id) {
-        Book book = bookRepository.findByIdAndIsDeletedFalse(id).orElseThrow(
+        Book book = bookRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("Book not found with id: " + id)
         );
         return bookMapper.toDto(book);
@@ -53,7 +49,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookDto updateBook(Long id, CreateBookRequestDto dto) {
-        Book book = bookRepository.findByIdAndIsDeletedFalse(id).orElseThrow(
+        Book book = bookRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("Book not found with id: " + id)
         );
 
@@ -68,27 +64,14 @@ public class BookServiceImpl implements BookService {
         if (!bookRepository.existsById(id)) {
             throw new EntityNotFoundException("Book not found with id: " + id);
         }
-        bookRepository.softDeleteById(id);
+
+        bookRepository.deleteById(id);
     }
 
     @Override
     public List<BookDto> searchBooks(BookSearchParametersDto params) {
 
-        Specification<Book> specification = Specification.where(
-                (root, query, cb) -> cb.isFalse(root.get(IS_DELETED_FIELD))
-        );
-
-        if (params.titlePart() != null && !params.titlePart().isBlank()) {
-            specification = specification.and(
-                    bookSpecificationProvider.getTitleLikeSpecification(params.titlePart())
-            );
-        }
-
-        if (params.author() != null && !params.author().isBlank()) {
-            specification = specification.and(
-                    bookSpecificationProvider.getAuthorLikeSpecification(params.author())
-            );
-        }
+        Specification<Book> specification = bookSpecificationBuilder.build(params);
 
         return bookRepository.findAll(specification).stream()
                 .map(bookMapper::toDto)
