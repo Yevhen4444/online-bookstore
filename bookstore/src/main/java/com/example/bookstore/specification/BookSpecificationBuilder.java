@@ -12,13 +12,10 @@ public class BookSpecificationBuilder {
 
     private final TitleSpecificationProvider titleProvider;
     private final AuthorSpecificationProvider authorProvider;
-    private final DeletedSpecificationProvider deletedProvider;
 
     public Specification<Book> build(BookSearchParametersDto params) {
 
-        Specification<Book> spec = Specification.where(
-                deletedProvider.getSpecification()
-        );
+        Specification<Book> spec = Specification.where(null);
 
         if (params.titlePart() != null && !params.titlePart().isBlank()) {
             spec = spec.and(titleProvider.getSpecification(params.titlePart()));
