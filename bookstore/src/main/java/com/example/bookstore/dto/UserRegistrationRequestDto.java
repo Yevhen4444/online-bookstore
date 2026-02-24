@@ -12,8 +12,7 @@ import lombok.Setter;
 @FieldMatch(
         first = "password",
         second = "confirmPassword",
-        message = "Passwords must match"
-)
+        message = "Passwords must match")
 public class UserRegistrationRequestDto {
 
     @NotBlank

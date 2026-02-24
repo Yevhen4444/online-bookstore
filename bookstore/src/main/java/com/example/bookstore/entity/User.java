@@ -30,7 +30,4 @@ public class User {
 
     @Column
     private String shippingAddress;
-
-    public User() {
-    }
 }
