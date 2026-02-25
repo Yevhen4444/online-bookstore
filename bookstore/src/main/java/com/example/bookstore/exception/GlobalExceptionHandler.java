@@ -21,8 +21,7 @@ public class GlobalExceptionHandler {
         ErrorResponseDto response = new ErrorResponseDto(
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST.value(),
-                List.of(ex.getMessage())
-        );
+                List.of(ex.getMessage()));
 
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
