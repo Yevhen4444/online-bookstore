@@ -1,0 +1,22 @@
+- changeSet:
+    id: 002-create-admin-user
+    author: yourname
+    changes:
+      - insert:
+          tableName: users
+          columns:
+            - column:
+                name: id
+                valueNumeric: 1
+            - column:
+                name: email
+                value: admin@admin.com
+            - column:
+                name: password
+                value: $2a$10$abcdefghijklmnopqrstuv
+            - column:
+                name: first_name
+                value: Admin
+            - column:
+                name: last_name
+                value: Admin
