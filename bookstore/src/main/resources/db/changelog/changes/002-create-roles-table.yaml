@@ -5,6 +5,7 @@ databaseChangeLog:
       changes:
         - createTable:
             tableName: roles
+            ifNotExists: true
             columns:
               - column:
                   name: id
@@ -12,71 +13,37 @@ databaseChangeLog:
                   autoIncrement: true
                   constraints:
                     primaryKey: true
-                    nullable: false
               - column:
                   name: name
                   type: VARCHAR(50)
                   constraints:
                     nullable: false
-                    unique: true
 
-  - changeSet:
-      id: 002-create-user-roles-table
-      author: yourname
-      changes:
-        - createTable:
-            tableName: user_roles
-            columns:
-              - column:
-                  name: user_id
-                  type: BIGINT
-                  constraints:
-                    nullable: false
-              - column:
-                  name: role_id
-                  type: BIGINT
-                  constraints:
-                    nullable: false
-        - addForeignKeyConstraint:
-            baseTableName: user_roles
-            baseColumnNames: user_id
-            referencedTableName: users
-            referencedColumnNames: id
-            constraintName: fk_userroles_user
-        - addForeignKeyConstraint:
-            baseTableName: user_roles
-            baseColumnNames: role_id
-            referencedTableName: roles
-            referencedColumnNames: id
-            constraintName: fk_userroles_role
-
-  - changeSet:
-      id: 003-insert-roles
-      author: yourname
-      changes:
         - insert:
             tableName: roles
             columns:
               - column:
                   name: name
-                  value: USER
+                  value: 'USER'
+
+            preConditions:
+              - not:
+                  tableExists:
+                    tableName: roles
+              - sqlCheck:
+                  expectedResult: '0'
+                  sql: "SELECT COUNT(*) FROM roles WHERE name='USER'"
+
         - insert:
             tableName: roles
             columns:
               - column:
                   name: name
-                  value: ADMIN
-
-  - changeSet:
-      id: 004-assign-admin-role
-      author: yourname
-      changes:
-        - insert:
-            tableName: user_roles
-            columns:
-              - column:
-                  name: user_id
-                  valueNumeric: 1
-              - column:
-                  name: role_id
-                  valueNumeric: 2
+                  value: 'ADMIN'
+            preConditions:
+              - not:
+                  tableExists:
+                    tableName: roles
+              - sqlCheck:
+                  expectedResult: '0'
+                  sql: "SELECT COUNT(*) FROM roles WHERE name='ADMIN'"
