@@ -1,0 +1,49 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-create-roles-table
+      author: yourname
+      changes:
+        - createTable:
+            tableName: roles
+            ifNotExists: true
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: name
+                  value: 'USER'
+
+            preConditions:
+              - not:
+                  tableExists:
+                    tableName: roles
+              - sqlCheck:
+                  expectedResult: '0'
+                  sql: "SELECT COUNT(*) FROM roles WHERE name='USER'"
+
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: name
+                  value: 'ADMIN'
+            preConditions:
+              - not:
+                  tableExists:
+                    tableName: roles
+              - sqlCheck:
+                  expectedResult: '0'
+                  sql: "SELECT COUNT(*) FROM roles WHERE name='ADMIN'"
