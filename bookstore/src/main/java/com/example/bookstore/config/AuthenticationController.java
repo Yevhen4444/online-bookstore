@@ -1,4 +1,4 @@
-package com.example.bookstore.controller;
+package com.example.bookstore.config;
 
 import com.example.bookstore.dto.UserLoginRequestDto;
 import com.example.bookstore.dto.UserLoginResponseDto;
@@ -34,6 +34,7 @@ public class AuthenticationController {
                 throws RegistrationException {
         return userService.register(request);
     }
+
     @PostMapping("/login")
     @Operation(
             summary = "Authenticate user",
