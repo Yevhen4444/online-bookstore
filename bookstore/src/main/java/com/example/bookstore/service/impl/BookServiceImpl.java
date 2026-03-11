@@ -1,6 +1,7 @@
 package com.example.bookstore.service.impl;
 
 import com.example.bookstore.dto.BookDto;
+import com.example.bookstore.dto.BookDtoWithoutCategoryIds;
 import com.example.bookstore.dto.BookSearchParametersDto;
 import com.example.bookstore.dto.CreateBookRequestDto;
 import com.example.bookstore.entity.Book;
@@ -9,6 +10,8 @@ import com.example.bookstore.repository.BookRepository;
 import com.example.bookstore.service.BookService;
 import com.example.bookstore.specification.BookSpecificationBuilder;
 import jakarta.persistence.EntityNotFoundException;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +29,7 @@ public class BookServiceImpl implements BookService {
     private final BookSpecificationBuilder bookSpecificationBuilder;
 
     @Override
+
     public Page<BookDto> getAll(Pageable pageable) {
         return bookRepository.findAll(pageable)
                 .map(bookMapper::toDto);
@@ -73,5 +77,14 @@ public class BookServiceImpl implements BookService {
         return bookRepository.findAll(specification, pageable)
                 .map(bookMapper::toDto);
 
+    }
+
+    @Override
+    public List<BookDtoWithoutCategoryIds> findAllByCategoryId(Long categoryId) {
+        List<Book> books = bookRepository.findAllByCategoryId(categoryId);
+        List<BookDtoWithoutCategoryIds> result = books.stream()
+                .map(bookMapper::toDtoWithoutCategories)
+                .collect(Collectors.toList());
+        return result;
     }
 }
