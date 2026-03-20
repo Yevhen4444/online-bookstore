@@ -12,6 +12,7 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,24 +30,28 @@ import org.springframework.web.bind.annotation.RestController;
 public class BookController {
     private final BookService bookService;
 
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @Operation(summary = "Get book by id")
     @GetMapping("/{id}")
     public BookDto getBookById(@PathVariable Long id) {
         return bookService.getBookById(id);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @Operation(summary = "Create a new book")
     @PostMapping
     public BookDto createBook(@RequestBody @Valid CreateBookRequestDto dto) {
         return bookService.createBook(dto);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @Operation(summary = "Update book by id")
     @PutMapping("/{id}")
     public BookDto updateBook(@PathVariable Long id, @RequestBody @Valid CreateBookRequestDto dto) {
         return bookService.updateBook(id, dto);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @Operation(summary = "Delete book by id")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -54,6 +59,7 @@ public class BookController {
         bookService.deleteBook(id);
     }
 
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @Operation(summary = "Search books by parameters with pagination")
     @GetMapping("/search")
     public Page<BookDto> searchBooks(BookSearchParametersDto params,
@@ -61,6 +67,7 @@ public class BookController {
         return bookService.searchBooks(params, pageable);
     }
 
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @Operation(summary = "Get all books with pagination")
     @GetMapping
     public Page<BookDto> getAll(@ParameterObject Pageable pageable) {
