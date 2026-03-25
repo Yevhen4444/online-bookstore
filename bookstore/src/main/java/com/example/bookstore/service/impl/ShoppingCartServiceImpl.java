@@ -7,35 +7,39 @@ import com.example.bookstore.entity.Book;
 import com.example.bookstore.entity.CartItem;
 import com.example.bookstore.entity.ShoppingCart;
 import com.example.bookstore.entity.User;
+import com.example.bookstore.exception.EntityNotFoundException;
 import com.example.bookstore.mapper.ShoppingCartMapper;
 import com.example.bookstore.repository.BookRepository;
 import com.example.bookstore.repository.CartItemRepository;
 import com.example.bookstore.repository.ShoppingCartRepository;
+import com.example.bookstore.repository.UserRepository;
 import com.example.bookstore.service.ShoppingCartService;
-import com.example.bookstore.service.UserService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ShoppingCartServiceImpl implements ShoppingCartService {
     private final ShoppingCartRepository shoppingCartRepository;
-    private final UserService userService;
     private final ShoppingCartMapper shoppingCartMapper;
     private final BookRepository bookRepository;
     private final CartItemRepository cartItemRepository;
+    private final UserRepository userRepository;
 
     @Override
     public ShoppingCartDto getCart() {
         String email = SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getName();
-        User user = userService.findByEmail(email);
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "User not found by email: " + email));
         ShoppingCart shoppingCart = shoppingCartRepository.findByUser(user)
-                .orElseThrow(
-                        () -> new RuntimeException("Can't find shopping cart for user with email: "
-                                + email));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Can't find shopping cart for user with email: " + email));
         return shoppingCartMapper.toDto(shoppingCart);
     }
 
@@ -44,13 +48,15 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         String email = SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getName();
-        User user = userService.findByEmail(email);
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "User not found by email: " + email));
         ShoppingCart shoppingCart = shoppingCartRepository.findByUser(user)
-                .orElseThrow(() -> new RuntimeException(
+                .orElseThrow(() -> new EntityNotFoundException(
                         "Can't find shopping cart for user with email: " + email));
 
         Book book = bookRepository.findById(requestDto.getBookId())
-                .orElseThrow(() -> new RuntimeException(
+                .orElseThrow(() -> new EntityNotFoundException(
                         "Can't find book by id: " + requestDto.getBookId()));
 
         CartItem existingCartItem = shoppingCart.getCartItems().stream()
@@ -60,14 +66,12 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
         if (existingCartItem != null) {
             existingCartItem.setQuantity(existingCartItem.getQuantity() + requestDto.getQuantity());
-            cartItemRepository.save(existingCartItem);
         } else {
             CartItem cartItem = new CartItem();
             cartItem.setShoppingCart(shoppingCart);
             cartItem.setBook(book);
             cartItem.setQuantity(requestDto.getQuantity());
-            CartItem savedCartItem = cartItemRepository.save(cartItem);
-            shoppingCart.getCartItems().add(savedCartItem);
+            shoppingCart.getCartItems().add(cartItem);
         }
 
         return shoppingCartMapper.toDto(shoppingCart);
@@ -78,18 +82,20 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         String email = SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getName();
-        User user = userService.findByEmail(email);
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "User not found by email: " + email));
         ShoppingCart shoppingCart = shoppingCartRepository.findByUser(user)
-                .orElseThrow(() -> new RuntimeException(
+                .orElseThrow(() -> new EntityNotFoundException(
                         "Can't find shopping cart for user with email: " + email));
         CartItem cartItem = cartItemRepository.findById(cartItemId)
-                .orElseThrow(() -> new RuntimeException(
+                .orElseThrow(() -> new EntityNotFoundException(
                         "Can't find cart item by id: " + cartItemId));
         if (!cartItem.getShoppingCart().getId().equals(shoppingCart.getId())) {
-            throw new RuntimeException("Cart item doesn't belong to current user's shopping cart");
+            throw new IllegalStateException(
+                    "Cart item doesn't belong to current user's shopping cart");
         }
         cartItem.setQuantity(requestDto.getQuantity());
-        cartItemRepository.save(cartItem);
         return shoppingCartMapper.toDto(shoppingCart);
     }
 
@@ -98,18 +104,27 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         String email = SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getName();
-        User user = userService.findByEmail(email);
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "User not found by email: " + email));
         ShoppingCart shoppingCart = shoppingCartRepository.findByUser(user)
-                .orElseThrow(() -> new RuntimeException(
+                .orElseThrow(() -> new EntityNotFoundException(
                         "Can't find shopping cart for user with email: " + email));
         CartItem cartItem = cartItemRepository.findById(cartItemId)
-                .orElseThrow(() -> new RuntimeException(
+                .orElseThrow(() -> new EntityNotFoundException(
                         "Can't find cart item by id: " + cartItemId));
         if (!cartItem.getShoppingCart().getId().equals(shoppingCart.getId())) {
-            throw new RuntimeException("Cart item doesn't belong to current user's shopping cart");
+            throw new IllegalStateException(
+                    "Cart item doesn't belong to current user's shopping cart");
         }
 
         shoppingCart.getCartItems().remove(cartItem);
-        cartItemRepository.delete(cartItem);
+    }
+
+    @Override
+    public void createShoppingCart(User user) {
+        ShoppingCart shoppingCart = new ShoppingCart();
+        shoppingCart.setUser(user);
+        shoppingCartRepository.save(shoppingCart);
     }
 }
