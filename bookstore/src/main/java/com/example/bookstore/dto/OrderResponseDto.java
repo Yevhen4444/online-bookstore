@@ -1,5 +1,6 @@
 package com.example.bookstore.dto;
 
+import com.example.bookstore.entity.OrderStatus;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;

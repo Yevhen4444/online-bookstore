@@ -23,8 +23,8 @@ import lombok.Setter;
 @Entity
 @Table(name = "orders")
 public class Order {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
     @JoinColumn(nullable = false)

@@ -18,11 +18,11 @@ import lombok.Setter;
 @Entity
 @Table(name = "order_items")
 public class OrderItem {
-   @Id
-   @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-   @JoinColumn(nullable = false)
+    @JoinColumn(nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private Order order;
 
