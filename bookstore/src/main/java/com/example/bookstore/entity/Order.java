@@ -25,7 +25,7 @@ import lombok.Setter;
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    private Long id;
 
     @JoinColumn(nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
