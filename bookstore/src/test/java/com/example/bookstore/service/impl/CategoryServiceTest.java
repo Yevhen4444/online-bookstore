@@ -7,6 +7,7 @@ import com.example.bookstore.entity.Category;
 import com.example.bookstore.exception.EntityNotFoundException;
 import com.example.bookstore.mapper.CategoryMapper;
 import com.example.bookstore.repository.CategoryRepository;
+import com.example.bookstore.util.TestDataHelper;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,15 +38,11 @@ public class CategoryServiceTest {
     @Test
     void shouldReturnCategoryById() {
         Long id = 1L;
-        Category category = new Category();
-        category.setId(1L);
-        category.setName("Fantasy");
+        Category category = TestDataHelper.createCategory(id, "Fantasy");
         category.setDescription("Fantasy books");
 
-        CategoryDto categoryDto = new CategoryDto();
-        categoryDto.setId(1L);
-        categoryDto.setName("Fantasy");
-        categoryDto.setDescription("Fantasy books");
+        CategoryDto categoryDto =
+                TestDataHelper.createCategoryDto(id, "Fantasy", "Fantasy books");
 
         when(categoryRepository.findById(id))
                 .thenReturn(Optional.of(category));
@@ -55,12 +52,12 @@ public class CategoryServiceTest {
 
         CategoryDto result = categoryService.getById(id);
         assertNotNull(result);
+        assertEquals(id, result.getId());
         assertEquals("Fantasy", result.getName());
         assertEquals("Fantasy books", result.getDescription());
 
         verify(categoryRepository).findById(id);
         verify(categoryMapper).toDto(category);
-
     }
 
     @Test
@@ -73,28 +70,21 @@ public class CategoryServiceTest {
                 () -> categoryService.getById(id));
         assertEquals("Category not found for id: " + id, exception.getMessage());
         verify(categoryRepository).findById(id);
-        verify(categoryMapper, never()).toDto(any());
-   }
+        verify(categoryMapper, never()).toDto(any(Category.class));
+    }
 
    @Test
    void shouldSaveCategorySuccessfully() {
-       CreateCategoryRequestDto requestDto = new CreateCategoryRequestDto();
-       requestDto.setName("History");
-       requestDto.setDescription("History books");
+       CreateCategoryRequestDto requestDto =
+               TestDataHelper.createCategoryRequestDto("History", "History books");
 
-       Category category = new Category();
-       category.setName("History");
-       category.setDescription("History books");
+       Category category = TestDataHelper.createCategory("History", "History books");
 
-       Category savedCategory = new Category();
-       savedCategory.setId(1L);
-       savedCategory.setName("History");
-       savedCategory.setDescription("History books");
+       Category savedCategory =
+               TestDataHelper.createCategory(1L, "History", "History books");
 
-       CategoryDto categoryDto = new CategoryDto();
-       categoryDto.setId(1L);
-       categoryDto.setName("History");
-       categoryDto.setDescription("History books");
+       CategoryDto categoryDto =
+               TestDataHelper.createCategoryDto(1L, "History", "History books");
 
        when(categoryMapper.toEntity(requestDto))
                .thenReturn(category);
@@ -117,24 +107,14 @@ public class CategoryServiceTest {
    @Test
    void shouldUpdateCategorySuccessfully() {
        Long id = 1L;
-       UpdateCategoryRequestDto requestDto = new UpdateCategoryRequestDto();
-       requestDto.setName("Updated History");
-       requestDto.setDescription("Updated history books");
-
-       Category existingCategory = new Category();
-       existingCategory.setId(1L);
-       existingCategory.setName("History");
-       existingCategory.setDescription("Old history books");
-
-       Category category = new Category();
-       category.setId(1L);
-       category.setName("Updated History");
-       category.setDescription("Updated history books");
-
-       CategoryDto categoryDto = new CategoryDto();
-       categoryDto.setId(1L);
-       categoryDto.setName("Updated History");
-       categoryDto.setDescription("Updated history books");
+       UpdateCategoryRequestDto requestDto =
+               TestDataHelper.createUpdateCategoryRequestDto(
+                       "Updated History", "Updated history books");
+       Category existingCategory =
+               TestDataHelper.createCategory(id, "History", "Old history books");
+       CategoryDto categoryDto =
+               TestDataHelper.createCategoryDto(
+                       id, "Updated History", "Updated history books");
 
        when(categoryRepository.findById(id))
                .thenReturn(Optional.of(existingCategory));
@@ -158,11 +138,7 @@ public class CategoryServiceTest {
    @Test
    void shouldSoftDeleteCategoryById() {
        Long id = 1L;
-       Category category = new Category();
-       category.setId(1L);
-       category.setName("History");
-       category.setDescription("History books");
-       category.setDeleted(false);
+       Category category = TestDataHelper.createCategory(id, "Fantasy");
 
        when(categoryRepository.findById(id))
                .thenReturn(Optional.of(category));

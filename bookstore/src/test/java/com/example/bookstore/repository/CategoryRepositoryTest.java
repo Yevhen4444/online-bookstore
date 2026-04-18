@@ -1,6 +1,7 @@
 package com.example.bookstore.repository;
 
 import com.example.bookstore.entity.Category;
+import com.example.bookstore.util.TestDataHelper;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -16,10 +17,7 @@ public class CategoryRepositoryTest {
 
     @Test
     void shouldSaveAndFindCategoryById() {
-        Category category = new Category();
-        category.setName("Fantasy");
-        category.setDescription("Fantasy books");
-
+        Category category = TestDataHelper.createCategory("Fantasy", "Fantasy books");
         Category savedCategory = categoryRepository.save(category);
         Optional<Category> foundCategory = categoryRepository.findById(savedCategory.getId());
 
@@ -30,15 +28,10 @@ public class CategoryRepositoryTest {
 
     @Test
     void shouldFindAllCategories() {
-        Category category1 = new Category();
-        category1.setName("Fantasy");
-        category1.setDescription("Fantasy books");
-        Category category2 = new Category();
-        category2.setName("Drama");
-        category2.setDescription("Drama books");
-
-        Category savedCategory = categoryRepository.save(category1);
-        Category savedCategory2 = categoryRepository.save(category2);
+        Category firstCategory = TestDataHelper.createCategory("Fantasy", "Fantasy books");
+        Category secondCategory = TestDataHelper.createCategory("Fantasy", "Fantasy books");
+        Category savedFirstCategory = categoryRepository.save(firstCategory);
+        Category savedSecondCategory = categoryRepository.save(secondCategory);
         List<Category> categories = categoryRepository.findAll();
 
         assertThat(categories).isNotEmpty();
@@ -47,13 +40,11 @@ public class CategoryRepositoryTest {
 
     @Test
     void shouldDeleteCategoryById() {
-        Category category = new Category();
-        category.setName("Fantasy");
-        category.setDescription("Fantasy books");
-
+        Category category = TestDataHelper.createCategory("Fantasy", "Fantasy books");
         Category saved = categoryRepository.save(category);
         categoryRepository.deleteById(saved.getId());
         Optional<Category> found = categoryRepository.findById(saved.getId());
+
         assertThat(found).isEmpty();
     }
 }
