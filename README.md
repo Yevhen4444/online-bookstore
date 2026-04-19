@@ -50,6 +50,37 @@ The application allows users to browse books, search books by parameters, work w
 
 👉 A shopping cart is automatically created after user registration.
 
+## 📌 API Endpoints
+
+### 🔐 Authentication
+- POST `/auth/signup` — register user
+- POST `/auth/login` — get JWT token
+
+### 📚 Books
+- GET `/books` — get all books (pagination, sorting)
+- GET `/books/{id}` — get book by id
+- POST `/books` — create book (**ADMIN**)
+- PUT `/books/{id}` — update book (**ADMIN**)
+- DELETE `/books/{id}` — delete book (**ADMIN**)
+
+### 🗂️ Categories
+- GET `/categories` — get all categories
+- GET `/categories/{id}` — get category by id
+- POST `/categories` — create (**ADMIN**)
+- PUT `/categories/{id}` — update (**ADMIN**)
+- DELETE `/categories/{id}` — delete (**ADMIN**)
+
+### 🛒 Shopping Cart
+- GET `/cart` — view cart
+- POST `/cart/items` — add item
+- PUT `/cart/items/{id}` — update item
+- DELETE `/cart/items/{id}` — remove item
+
+### 📦 Orders
+- POST `/orders` — place order
+- GET `/orders` — order history
+- GET `/orders/{id}` — order details
+
 ---
 
 ### 📚 Book Management
