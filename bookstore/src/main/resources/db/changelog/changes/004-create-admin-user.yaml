@@ -18,6 +18,3 @@ databaseChangeLog:
               - column:
                   name: password
                   value: encryptedpassword
-              - column:
-                  name: role_id
-                  value: 1

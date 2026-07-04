@@ -1,257 +1,353 @@
 # 📚 BookStore API
 
 ![License](https://img.shields.io/badge/license-MIT-lightgrey)
-
-## 🚀 Introduction
-BookStore is a RESTful backend application for managing an online bookstore.
-
-This project was created to demonstrate practical backend development skills using Java and Spring technologies. It shows how to build a secure and structured API with authentication, role-based access, database migrations, pagination, sorting, and testing.
-
-The application allows users to browse books, search books by parameters, work with a shopping cart, and place orders. Administrators can manage books and categories.
-
-## 🛠️ Technologies Used
-
-### 🔧 Core Technologies
-- Java 17
-- Spring Boot
-- Spring Web
-- Spring Security
-- JWT Authentication
-- Spring Data JPA
-- Hibernate
-- MySQL
-- Liquibase
-- Swagger (OpenAPI)
-- Maven
-- Docker & Docker Compose
-
-### 🧪 Testing
-- JUnit 5
-- Spring Boot Test
-- MockMvc
-
-### 🧠 Architecture & Patterns
-- Layered Architecture (Controller → Service → Repository)
-- DTO pattern
-- Mapper layer
-- Specification pattern (dynamic search)
-- Custom validation
-- Global exception handling
-- Pagination & sorting
-
-## ⚙️ Features
-
-### 🔐 Authentication & Authorization
-- User registration
-- Login with JWT authentication
-- Role-based access control (USER / ADMIN)
-- Email used as username
-- Password encryption
-
-👉 A shopping cart is automatically created after user registration.
-
-## 📌 API Endpoints
-
-### 🔐 Authentication
-- POST `/auth/signup` — register user
-- POST `/auth/login` — get JWT token
-
-### 📚 Books
-- GET `/books` — get all books (pagination, sorting)
-- GET `/books/{id}` — get book by id
-- POST `/books` — create book (**ADMIN**)
-- PUT `/books/{id}` — update book (**ADMIN**)
-- DELETE `/books/{id}` — delete book (**ADMIN**)
-
-### 🗂️ Categories
-- GET `/categories` — get all categories
-- GET `/categories/{id}` — get category by id
-- POST `/categories` — create (**ADMIN**)
-- PUT `/categories/{id}` — update (**ADMIN**)
-- DELETE `/categories/{id}` — delete (**ADMIN**)
-
-### 🛒 Shopping Cart
-- GET `/cart` — view cart
-- POST `/cart/items` — add item
-- PUT `/cart/items/{id}` — update item
-- DELETE `/cart/items/{id}` — remove item
-
-### 📦 Orders
-- POST `/orders` — place order
-- GET `/orders` — order history
-- GET `/orders/{id}` — order details
+![Build](https://img.shields.io/badge/build-passing-brightgreen)
+![Docker](https://img.shields.io/badge/docker-ready-blue)
 
 ---
 
-### 📚 Book Management
-- Create, update, delete books (**ADMIN only**)
-- Get book by ID
-- Get all books (with pagination)
-- 🔍 Search books by:
-    - title
-    - author
-- Pagination & sorting support
+**BookStore** — demo backend application that simulates real e-commerce bookstore flows: secure authentication, product management, shopping cart and order processing.
+
+This project demonstrates how to build a secure and maintainable REST API using Spring Boot ecosystem technologies.
 
 ---
 
-### 🗂️ Category Management
-- Create, update, delete categories (**ADMIN only**)
-- Get category by ID
-- Get all categories (paginated)
-- Get all books by category
+# 🚀 Table of Contents
+
+* Introduction
+* Quick Start
+* Environment Variables
+* Technologies
+* Features
+* Usage
+* API Endpoints
+* Example Requests
+* Example Responses
+* Docker and Database
+* Testing
+* Demo
+* License
+* Author
 
 ---
 
-### 🛒 Shopping Cart
-- Add books to cart
-- Update cart items
-- Remove items from cart
-- View cart
+# 🔥 Introduction
+
+BookStore includes:
+
+* JWT authentication
+* Role-based authorization (USER / ADMIN)
+* Book and category management
+* Shopping cart functionality
+* Order processing
+* Pagination and sorting
+* Liquibase database migrations
+* Docker support
+* Swagger/OpenAPI documentation
 
 ---
 
-### 📦 Orders
-- Place orders
-- View order history
-- View order details
-- Order status support
+# ⚡ Quick Start
 
-## 🔐 Security
+## Clone repository
 
-The application uses Spring Security with JWT-based authentication.
-
-- Users authenticate using email and password
-- JWT token is used to access protected endpoints
-- Role-based authorization is implemented:
-    - ADMIN → manage books and categories
-    - USER → browse books, manage cart, create orders
-
----
-
-## 🔍 Search Implementation
-
-The project uses the Specification pattern to implement dynamic search functionality.
-
-Users can filter books by:
-- title (partial match)
-- author (partial match)
-
-Search supports pagination and works together with sorting.
-
-## 📊 API Documentation
-
-Swagger UI is available at:
-
-http://localhost:8080/swagger-ui.html
-
----
-
-## ▶️ How to Run the Project
-
-### 1. Clone the repository
+```bash id="xv3b1n"
 git clone https://github.com/Yevhen4444/online-bookstore
-cd bookstore
+cd online-bookstore
+```
 
 ---
 
-### 2. Configure database
+## Create `.env`
 
-Update `application.properties`:
-
-spring.datasource.url=jdbc:mysql://localhost:3306/bookstore  
-spring.datasource.username=your_username  
-spring.datasource.password=your_password
+```bash id="j8m0wr"
+cp .env.example .env
+```
 
 ---
 
-### 3. Run with Docker (recommended)
+## Run application
 
-docker-compose up --build
-
----
-
-### 4. Or run manually
-
-mvn clean install  
-mvn spring-boot:run
-
-## 🗄️ Database
-
-- MySQL database
-- Database schema managed using Liquibase
-- Migration scripts are located in:
-  resources/db/changelog
+```bash id="8v7yqt"
+docker compose down -v
+docker compose up --build
+```
 
 ---
 
-## 🧪 Testing
+## Open Swagger UI
 
-The project includes tests for:
-- Controller layer
-- Service layer
-- Repository layer
-
-Technologies used:
-- JUnit 5
-- Spring Boot Test
-- MockMvc
+```text id="bbdsk1"
+http://localhost:8081/api/swagger-ui/index.html
+```
 
 ---
 
-## 📁 Project Structure
+# ⚙️ Environment Variables
 
-controller/
-service/
-repository/
-entity/
-dto/
-mapper/
-security/
-specification/
-validation/
-exception/
-config/
+```env id="4rqy1m"
+MYSQLDB_USER=bookstore_user
+MYSQLDB_ROOT_PASSWORD=bookstore_pass
+MYSQLDB_DATABASE=bookstore
+MYSQLDB_LOCAL_PORT=3307
+MYSQLDB_DOCKER_PORT=3306
 
-## 🎥 Demo Video
+SPRING_LOCAL_PORT=8081
+SPRING_DOCKER_PORT=8080
 
-Loom video (2–4 min) demonstrating the project:
+SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/bookstore?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+SPRING_DATASOURCE_USERNAME=bookstore_user
+SPRING_DATASOURCE_PASSWORD=bookstore_pass
+```
 
-👉 [Add your Loom link here]
-
----
-
-## 📬 Postman Collection (optional)
-
-You can attach a Postman collection to test API endpoints more easily.
+> Do not commit `.env`
 
 ---
 
-## 💡 Challenges & Solutions
+# 🛠️ Technologies
 
-### ❗ Challenge:
-Implementing secure authentication with JWT.
-
-### ✅ Solution:
-Configured Spring Security with JWT filters and role-based authorization.
-
----
-
-### ❗ Challenge:
-Implementing flexible book search.
-
-### ✅ Solution:
-Used Specification pattern to dynamically build queries based on user input.
-
----
-
-### ❗ Challenge:
-Maintaining clean and scalable architecture.
-
-### ✅ Solution:
-Applied layered architecture and separated responsibilities between controller, service, repository, DTO, and mapper layers.
+* Java 17
+* Spring Boot
+* Spring Security
+* JWT
+* Spring Data JPA
+* Hibernate
+* MySQL
+* Liquibase
+* Docker
+* Swagger / OpenAPI
+* JUnit
+* Mockito
 
 ---
 
-## 👨‍💻 Author
+# ✅ Features
 
-Yevhen – Junior Java Developer
+* JWT authentication
+* Role-based access control
+* Book CRUD
+* Category CRUD
+* Shopping cart
+* Orders
+* Pagination and sorting
+* Request validation
+* Liquibase migrations
+* Dockerized environment
+
+---
+
+# 🔐 Usage
+
+1. Register a new user
+2. Login and receive JWT token
+3. Use token in Authorization header:
+
+```http id="d8g0pl"
+Authorization: Bearer <JWT_TOKEN>
+```
+
+---
+
+# 📌 API Endpoints
+
+## 🔐 Authentication
+
+| Method | Endpoint               | Description           |
+| ------ | ---------------------- | --------------------- |
+| POST   | /api/auth/registration | Register user         |
+| POST   | /api/auth/login        | Login and receive JWT |
+
+---
+
+## 📚 Books
+
+| Method | Endpoint        | Description         |
+| ------ | --------------- | ------------------- |
+| GET    | /api/books      | Get all books       |
+| GET    | /api/books/{id} | Get book by id      |
+| POST   | /api/books      | Create book (ADMIN) |
+| PUT    | /api/books/{id} | Update book (ADMIN) |
+| DELETE | /api/books/{id} | Delete book (ADMIN) |
+
+### Query parameters
+
+* `title` — filter by title
+* `author` — filter by author
+* `sort` — sorting example: `sort=price,asc`
+* `page` — page number
+* `size` — page size
+
+### Example
+
+```http id="nlsm86"
+GET /api/books?page=0&size=10&sort=price,asc&title=clean
+```
+
+---
+
+## 🛒 Shopping Cart & Orders
+
+| Method | Endpoint         | Description       |
+| ------ | ---------------- | ----------------- |
+| POST   | /api/cart/items  | Add item to cart  |
+| GET    | /api/cart        | Get shopping cart |
+| POST   | /api/orders      | Create order      |
+| GET    | /api/orders/{id} | Get order by id   |
+
+---
+
+# 🔑 Example Requests
+
+## Login
+
+```bash id="gwg0xe"
+curl -X POST "http://localhost:8081/api/auth/login" \
+  -H "Content-Type: application/json" \
+  -d '{"email":"user@example.com","password":"password"}'
+```
+
+---
+
+## Authorized request
+
+```bash id="v5zv1f"
+curl -H "Authorization: Bearer <JWT_TOKEN>" \
+http://localhost:8081/api/books
+```
+
+---
+
+## Create book
+
+```bash id="51v33f"
+curl -X POST "http://localhost:8081/api/books" \
+  -H "Authorization: Bearer <JWT_TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title":"Clean Code",
+    "author":"Robert Martin",
+    "price":29.99
+  }'
+```
+
+---
+
+## Add item to cart
+
+```bash id="qsc1ms"
+curl -X POST "http://localhost:8081/api/cart/items" \
+  -H "Authorization: Bearer <JWT_TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "bookId":1,
+    "quantity":1
+  }'
+```
+
+---
+
+# 📊 Example Responses
+
+## Success response
+
+```json id="p0w9sv"
+{
+  "id": 1,
+  "title": "Clean Code",
+  "author": "Robert Martin",
+  "price": 29.99
+}
+```
+
+---
+
+## Paginated response
+
+```json id="ng1jlwm"
+{
+  "content": [],
+  "pageable": {
+    "pageNumber": 0,
+    "pageSize": 10
+  },
+  "totalElements": 123,
+  "totalPages": 13
+}
+```
+
+---
+
+## Validation error
+
+```json id="7cblbo"
+{
+  "timestamp": "2026-04-19T12:00:00",
+  "status": 400,
+  "errors": [
+    "email must not be blank",
+    "password must be at least 6 characters"
+  ],
+  "path": "/api/auth/registration"
+}
+```
+
+---
+
+# 🐳 Docker and Database
+
+## Run containers
+
+```bash id="js4rlm"
+docker compose down -v
+docker compose up --build
+```
+
+---
+
+## Notes
+
+* If port is busy → change `MYSQLDB_LOCAL_PORT`
+* If database fails → run:
+
+```bash id="0t0vxk"
+docker compose down -v
+```
+
+* Liquibase migrations run automatically on application startup
+
+---
+
+# 🧪 Testing
+
+```bash id="6aq9m4"
+mvn test
+```
+
+Includes:
+
+* controller tests
+* service tests
+* repository tests
+
+---
+
+# 🎥 Demo
+
+https://www.loom.com/share/dd37daf4446e44a8b77a23beba9faed2
+
+### Timeline
+
+* 0:00 — Intro
+* 0:15 — Registration
+* 0:30 — Login
+* 1:40 — Category
+* 2:00 — Book
+* 2:30 — Cart
+* 3:00 — Order
+* 3:15 — Order History
+
+---
+
+# 👨‍💻 Author
+
+Yevhen — Junior Java Developer

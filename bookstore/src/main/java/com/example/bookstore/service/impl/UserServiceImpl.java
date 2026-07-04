@@ -4,10 +4,12 @@ import com.example.bookstore.dto.UserRegistrationRequestDto;
 import com.example.bookstore.dto.UserResponseDto;
 import com.example.bookstore.entity.Role;
 import com.example.bookstore.entity.RoleName;
+import com.example.bookstore.entity.ShoppingCart;
 import com.example.bookstore.entity.User;
 import com.example.bookstore.exception.RegistrationException;
 import com.example.bookstore.mapper.UserMapper;
 import com.example.bookstore.repository.RoleRepository;
+import com.example.bookstore.repository.ShoppingCartRepository;
 import com.example.bookstore.repository.UserRepository;
 import com.example.bookstore.service.UserService;
 import java.util.Set;
@@ -22,6 +24,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
+    private final ShoppingCartRepository shoppingCartRepository;
 
     @Override
     public UserResponseDto register(UserRegistrationRequestDto request)
@@ -39,6 +42,11 @@ public class UserServiceImpl implements UserService {
         user.setRoles(Set.of(userRole));
 
         User savedUser = userRepository.save(user);
+
+        ShoppingCart shoppingCart = new ShoppingCart();
+        shoppingCart.setUser(savedUser);
+        shoppingCartRepository.save(shoppingCart);
+
         return userMapper.toDto(savedUser);
     }
 
