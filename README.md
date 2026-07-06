@@ -19,6 +19,7 @@ This project demonstrates how to build a secure and maintainable REST API using 
 * Environment Variables
 * Technologies
 * Features
+* Model Diagram
 * Usage
 * API Endpoints
 * Example Requests
@@ -51,7 +52,7 @@ BookStore includes:
 
 ## Clone repository
 
-```bash id="xv3b1n"
+```bash
 git clone https://github.com/Yevhen4444/online-bookstore
 cd online-bookstore
 ```
@@ -60,15 +61,15 @@ cd online-bookstore
 
 ## Create `.env`
 
-```bash id="j8m0wr"
-cp .env.example .env
+```bash
+cp .env.template .env
 ```
 
 ---
 
 ## Run application
 
-```bash id="8v7yqt"
+```bash
 docker compose down -v
 docker compose up --build
 ```
@@ -77,7 +78,7 @@ docker compose up --build
 
 ## Open Swagger UI
 
-```text id="bbdsk1"
+```text
 http://localhost:8081/api/swagger-ui/index.html
 ```
 
@@ -85,7 +86,7 @@ http://localhost:8081/api/swagger-ui/index.html
 
 # ⚙️ Environment Variables
 
-```env id="4rqy1m"
+```env
 MYSQLDB_USER=bookstore_user
 MYSQLDB_ROOT_PASSWORD=bookstore_pass
 MYSQLDB_DATABASE=bookstore
@@ -136,13 +137,21 @@ SPRING_DATASOURCE_PASSWORD=bookstore_pass
 
 ---
 
+# 🗂️ Model Diagram
+
+The following diagram illustrates the main entities and relationships used in the BookStore application.
+
+![Model Diagram](docs/model-diagram.png)
+
+---
+
 # 🔐 Usage
 
 1. Register a new user
 2. Login and receive JWT token
 3. Use token in Authorization header:
 
-```http id="d8g0pl"
+```http
 Authorization: Bearer <JWT_TOKEN>
 ```
 
@@ -179,7 +188,7 @@ Authorization: Bearer <JWT_TOKEN>
 
 ### Example
 
-```http id="nlsm86"
+```http
 GET /api/books?page=0&size=10&sort=price,asc&title=clean
 ```
 
@@ -200,7 +209,7 @@ GET /api/books?page=0&size=10&sort=price,asc&title=clean
 
 ## Login
 
-```bash id="gwg0xe"
+```bash
 curl -X POST "http://localhost:8081/api/auth/login" \
   -H "Content-Type: application/json" \
   -d '{"email":"user@example.com","password":"password"}'
@@ -210,7 +219,7 @@ curl -X POST "http://localhost:8081/api/auth/login" \
 
 ## Authorized request
 
-```bash id="v5zv1f"
+```bash
 curl -H "Authorization: Bearer <JWT_TOKEN>" \
 http://localhost:8081/api/books
 ```
@@ -219,7 +228,7 @@ http://localhost:8081/api/books
 
 ## Create book
 
-```bash id="51v33f"
+```bash
 curl -X POST "http://localhost:8081/api/books" \
   -H "Authorization: Bearer <JWT_TOKEN>" \
   -H "Content-Type: application/json" \
@@ -234,7 +243,7 @@ curl -X POST "http://localhost:8081/api/books" \
 
 ## Add item to cart
 
-```bash id="qsc1ms"
+```bash
 curl -X POST "http://localhost:8081/api/cart/items" \
   -H "Authorization: Bearer <JWT_TOKEN>" \
   -H "Content-Type: application/json" \
@@ -250,7 +259,7 @@ curl -X POST "http://localhost:8081/api/cart/items" \
 
 ## Success response
 
-```json id="p0w9sv"
+```json
 {
   "id": 1,
   "title": "Clean Code",
@@ -263,7 +272,7 @@ curl -X POST "http://localhost:8081/api/cart/items" \
 
 ## Paginated response
 
-```json id="ng1jlwm"
+```json
 {
   "content": [],
   "pageable": {
@@ -279,7 +288,7 @@ curl -X POST "http://localhost:8081/api/cart/items" \
 
 ## Validation error
 
-```json id="7cblbo"
+```json
 {
   "timestamp": "2026-04-19T12:00:00",
   "status": 400,
@@ -297,7 +306,7 @@ curl -X POST "http://localhost:8081/api/cart/items" \
 
 ## Run containers
 
-```bash id="js4rlm"
+```bash
 docker compose down -v
 docker compose up --build
 ```
@@ -309,7 +318,7 @@ docker compose up --build
 * If port is busy → change `MYSQLDB_LOCAL_PORT`
 * If database fails → run:
 
-```bash id="0t0vxk"
+```bash
 docker compose down -v
 ```
 
@@ -319,7 +328,7 @@ docker compose down -v
 
 # 🧪 Testing
 
-```bash id="6aq9m4"
+```bash
 mvn test
 ```
 
