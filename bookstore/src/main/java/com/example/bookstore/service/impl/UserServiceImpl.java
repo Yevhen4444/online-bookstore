@@ -2,22 +2,30 @@ package com.example.bookstore.service.impl;
 
 import com.example.bookstore.dto.UserRegistrationRequestDto;
 import com.example.bookstore.dto.UserResponseDto;
+import com.example.bookstore.entity.Role;
+import com.example.bookstore.entity.RoleName;
 import com.example.bookstore.entity.User;
+import com.example.bookstore.exception.EntityNotFoundException;
 import com.example.bookstore.exception.RegistrationException;
 import com.example.bookstore.mapper.UserMapper;
+import com.example.bookstore.repository.RoleRepository;
 import com.example.bookstore.repository.UserRepository;
 import com.example.bookstore.service.ShoppingCartService;
 import com.example.bookstore.service.UserService;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final RoleRepository roleRepository;
     private final ShoppingCartService shoppingCartService;
 
     @Override
@@ -30,7 +38,13 @@ public class UserServiceImpl implements UserService {
 
         User user = userMapper.toModel(request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+
+        Role userRole = roleRepository.findByName(RoleName.USER)
+                .orElseThrow(() -> new EntityNotFoundException("Default role USER not found"));
+        user.setRoles(Set.of(userRole));
+
         User savedUser = userRepository.save(user);
+
         shoppingCartService.createShoppingCart(savedUser);
         return userMapper.toDto(savedUser);
     }
