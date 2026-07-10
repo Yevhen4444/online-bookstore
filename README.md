@@ -54,7 +54,7 @@ BookStore includes:
 
 ```bash
 git clone https://github.com/Yevhen4444/online-bookstore
-cd online-bookstore
+cd online-bookstore/bookstore
 ```
 
 ---
@@ -87,8 +87,8 @@ http://localhost:8081/api/swagger-ui/index.html
 # ⚙️ Environment Variables
 
 ```env
-MYSQLDB_USER=bookstore_user
-MYSQLDB_ROOT_PASSWORD=bookstore_pass
+MYSQLDB_USER=your_mysql_user
+MYSQLDB_ROOT_PASSWORD=your_mysql_password
 MYSQLDB_DATABASE=bookstore
 MYSQLDB_LOCAL_PORT=3307
 MYSQLDB_DOCKER_PORT=3306
@@ -97,8 +97,8 @@ SPRING_LOCAL_PORT=8081
 SPRING_DOCKER_PORT=8080
 
 SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/bookstore?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-SPRING_DATASOURCE_USERNAME=bookstore_user
-SPRING_DATASOURCE_PASSWORD=bookstore_pass
+SPRING_DATASOURCE_USERNAME=your_mysql_user
+SPRING_DATASOURCE_PASSWORD=your_mysql_password
 ```
 
 > Do not commit `.env`
@@ -141,7 +141,7 @@ SPRING_DATASOURCE_PASSWORD=bookstore_pass
 
 The following diagram illustrates the main entities and relationships used in the BookStore application.
 
-![Model Diagram](docs/model-diagram.png)
+![Model Diagram](bookstore/docs/model-diagram.png)
 
 ---
 
